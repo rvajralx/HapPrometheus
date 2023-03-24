@@ -1,0 +1,26 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: promtest-hpa
+spec:
+  scaleTargetRef:
+    # point the HPA at the sample application
+    apiVersion: apps/v1
+    kind: Deployment
+    name: promtest
+  # autoscale between 1 and 5 replicas 
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  # use a "Pods" metric, which takes the average of the
+  # given metric across all pods controlled by the autoscaling target
+  - type: Pods
+    pods:
+      # use the metric that you used above: pods/http_requests
+      metric:
+        name: http_requests
+      target:
+        type: AverageValue
+        averageValue: 500m
+      # metricName: http_requests
+      # targetAverageValue: 500m

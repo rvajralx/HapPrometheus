@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    # app: promtest
+    prometheus: example
+    role: alert-rules
+  name: weatherforecast-example-rule
+spec:
+  groups:
+  - name: WeatherForecastHttpRequests
+    rules:
+    - alert: HighHttpRequests
+      annotations:
+        summary: Alert test
+        description: Will alert when Http requests are more than 5
+        message: WeatherForecast endpoint is experiencing high volume
+      expr: http_requests_received_total{controller="WeatherForecast"} > 5

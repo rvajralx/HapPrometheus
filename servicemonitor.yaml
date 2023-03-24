@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1                                                                                                                                                                      
+kind: ServiceMonitor                                                                                                                                                                                      
+metadata:                                                                                                                                                                                                 
+  labels:
+    app: promtest
+  name: prom-service-monitor
+spec:                                                                                                                                                                                                    
+  endpoints:                                                                                                                                                                                              
+    - port: promtest-metrics
+      path: '/metrics'
+  selector:
+    matchLabels:
+      app: promtest

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: promtest
+  name: promtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: promtest
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: promtest
+    spec:
+      containers:
+      - image: docker.io/kwoonfaiintel/webapp-prom:linux
+        name: promtest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 100m
+            memory: 1Gi
+        ports:
+          - containerPort: 80
+      terminationGracePeriodSeconds: 60
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: promtest
+  labels:
+    app: promtest
+    run: promtest
+spec:
+  ports:
+  - name: promtest-port
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: promtest-metrics
+    port: 9091
+    protocol: TCP
+    targetPort: 9091
+  selector:
+    app: promtest
+  type: NodePort

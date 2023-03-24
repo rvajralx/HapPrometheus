@@ -1,0 +1,39 @@
+prometheus:
+  url: http://prometheus-k8s.monitoring.svc
+  port: 9090
+  path: ""
+
+rules:
+  custom:
+  - seriesQuery: '{__name__=~"my_sample_records_counter.*",namespace!="",pod!=""}'
+    resources:
+      overrides:
+        namespace:
+          resource: namespace
+        pod:
+          resource: pod
+    name:
+      matches: ^(.*)
+      as: "http_requests"
+    metricsQuery: |
+      sum by (<<.GroupBy>>) (
+        irate (
+          <<.Series>>{<<.LabelMatchers>>}[1m]
+        )
+      )
+  - seriesQuery: '{__name__=~"my_sample_timer_counter.*",namespace!="",pod!=""}'
+    resources:
+      overrides:
+        namespace:
+          resource: namespace
+        pod:
+          resource: pod
+    name:
+      matches: ^(.*)
+      as: "http_requests_timer"
+    metricsQuery: |
+      sum by (<<.GroupBy>>) (
+        irate (
+          <<.Series>>{<<.LabelMatchers>>}[1m]
+        )
+      )
